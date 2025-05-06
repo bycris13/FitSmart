@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import {View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import PressableButton from "../components/PressableButton";
 
 export default function RegisterScreen({ navigation }) {
@@ -29,16 +39,19 @@ export default function RegisterScreen({ navigation }) {
             placeholder="Celular"
             keyboardType="phone-pad"
           />
+
           <TextInput
             style={styles.input}
             placeholder="Correo electrónico"
             keyboardType="email-address"
           />
+
           <TextInput
             style={styles.input}
             placeholder="Contraseña"
             secureTextEntry
           />
+
           <TextInput
             style={styles.input}
             placeholder="Confirmar contraseña"
@@ -50,7 +63,7 @@ export default function RegisterScreen({ navigation }) {
             textStyle={styles.buttonText}
             label="Crear cuenta"
             onPress={() => {
-              console.log('HOLA');
+              console.log("HOLA");
             }}
           />
 
@@ -58,7 +71,7 @@ export default function RegisterScreen({ navigation }) {
             <Text>¿Ya tienes cuenta?</Text>
             <PressableButton
               textStyle={styles.loginLink}
-              label='Inicia sesión'
+              label="Inicia sesión"
               onPress={() => navigation.navigate("Login")}
             />
           </View>
@@ -75,18 +88,21 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
   },
+
   title: {
     alignItems: "center",
     marginBottom: 20,
   },
+
   titleText: {
-    fontSize: 40,
-    fontWeight: "bold",
+    fontSize: 50,
   },
+
   subtitle: {
     fontSize: 18,
     color: "#666",
   },
+
   input: {
     height: 50,
     borderColor: "#ccc",
@@ -95,26 +111,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
   },
+
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
   },
+
   button: {
     backgroundColor: "#b4d5a6",
     alignItems: "center",
     borderRadius: 8,
     padding: 15,
   },
+
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontSize: 17,
+    fontWeight: '500'
   },
+
   loginLinkContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
+    gap: 5,
   },
+
   loginLink: {
     color: "#0079fe",
   },

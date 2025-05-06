@@ -95,12 +95,14 @@ const styles = StyleSheet.create({
 
   textLoginColor: {
     color: "#fff",
+    fontSize: 17,
+    fontWeight: '500'
   },
 
   imgLogin: {
     alignSelf: "center",
     margin: 10,
     width: "50%",
-    height: "21%",
+    height: "22%",
   },
 });
