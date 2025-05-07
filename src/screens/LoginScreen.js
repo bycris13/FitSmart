@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation }) {
           <PressableButton
             textStyle={styles.textRegisterColor}
             label='Crea una cuenta.'
-            onPress={() => navigation.navigate("Register")}
+            onPress={() => navigation.navigate('SlectBodyPart')}
           />
         </View>   
       </View>
