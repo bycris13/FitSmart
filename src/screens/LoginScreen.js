@@ -1,8 +1,15 @@
-import { View, Text, TextInput, StyleSheet, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
-import React from "react";
+import { View, Text, TextInput, StyleSheet, Image, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
+import React, { useState } from "react";
 import PressableButton from "../components/PressableButton";
+import { auth } from '../firebase/firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 
 export default function LoginScreen({ navigation }) {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
@@ -20,19 +27,31 @@ export default function LoginScreen({ navigation }) {
           style={styles.input}
           placeholder="Correo electrónico"
           keyboardType="email-address"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
         />
 
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
           secureTextEntry
+          value={password}
+          onChangeText={(text) => setPassword(text)}
         />
 
         <PressableButton
           textStyle={styles.textLoginColor}
           style={styles.colorButton}
           label={"Ingresar"}
-          onPress={() => console.log("hola")}
+          onPress={async() =>{
+            try{
+              await signInWithEmailAndPassword(auth, email, password); // extra la auteticacion de firebae email y pass
+              /* Alert.alert("Conexion Exitosa"); */
+              navigation.navigate('SelectBodyPart'); // Screen: SeSelectBodyPart
+            }catch (error) {
+              Alert.alert("Error:", error.message);
+            }
+          }}
         />
 
         <View style={styles.acountText}>
@@ -40,7 +59,7 @@ export default function LoginScreen({ navigation }) {
           <PressableButton
             textStyle={styles.textRegisterColor}
             label='Crea una cuenta.'
-            onPress={() => navigation.navigate('SlectBodyPart')}
+            onPress={() => navigation.navigate('Register')}
           />
         </View>   
       </View>
