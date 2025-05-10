@@ -1,29 +1,45 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { View, Text,TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView,TouchableWithoutFeedback, Keyboard, Alert} from "react-native";
 import PressableButton from "../components/PressableButton";
+import { auth } from "../firebase/firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function RegisterScreen({ navigation }) {
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirPassword, setConfirmPassword] = useState('');
+
+  const createAcount = async () =>{
+    // Valida que los campos no esten vacios.
+    if (!name || !phone || !email || !password || !confirPassword ) {
+      return Alert.alert('Asegurate de llenar todos');
+    }
+    // Valida que los campos contraseña y Confirmar contraseña sean iguales.
+    if (password !== confirPassword) {
+      return Alert.alert('Las contraseñas no coinciden');
+    }
+    // Conexion con firebase
+    try {
+        await createUserWithEmailAndPassword(auth, email, password); // Recive los datos que le entran a firebae email y pass.
+        Alert.alert("Bienvenido", 'Cuenta creada exitosamente');
+        navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert("Error: ", error.password );
+    }
+  }
 
   return (
-    // 1. KeyboardAvoidingView mueve el contenido arriba al aparecer el teclado
+    // KeyboardAvoidingView mueve el contenido arriba al aparecer el teclado.
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/* 2. TouchableWithoutFeedback cierra el teclado al tocar fuera */}
+      {/* TouchableWithoutFeedback cierra el teclado al tocar fuera */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        {/* 3. ScrollView hace que todo pueda desplazarse si no cabe */}
+        {/* ScrollView hace que todo pueda desplazarse si no cabe */}
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
@@ -33,38 +49,51 @@ export default function RegisterScreen({ navigation }) {
             <Text style={styles.subtitle}>Regístrate</Text>
           </View>
 
-          <TextInput style={styles.input} placeholder="Nombre y Apellido" />
+          <TextInput 
+          style={styles.input}
+          placeholder="Nombre y Apellido" 
+          autoCapitalize="words"
+          value={name}
+          onChangeText={(text) => setName(text)}
+          />
+
           <TextInput
             style={styles.input}
             placeholder="Celular"
             keyboardType="phone-pad"
+            value={phone}
+            onChangeText={(text) => setPhone(text)}
           />
 
           <TextInput
             style={styles.input}
             placeholder="Correo electrónico"
             keyboardType="email-address"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
 
           <TextInput
             style={styles.input}
             placeholder="Contraseña"
             secureTextEntry
+            value={password}
+            onChangeText={(text) => setPassword(text)}
           />
 
           <TextInput
             style={styles.input}
             placeholder="Confirmar contraseña"
             secureTextEntry
+            value={confirPassword}
+            onChangeText={(text) => setConfirmPassword(text)}
           />
 
           <PressableButton
             style={styles.button}
             textStyle={styles.buttonText}
             label="Crear cuenta"
-            onPress={() => {
-              console.log("HOLA");
-            }}
+            onPress={() => createAcount()}
           />
 
           <View style={styles.loginLinkContainer}>

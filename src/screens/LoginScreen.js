@@ -45,11 +45,11 @@ export default function LoginScreen({ navigation }) {
           label={"Ingresar"}
           onPress={async() =>{
             try{
-              await signInWithEmailAndPassword(auth, email, password); // extra la auteticacion de firebae email y pass
+              await signInWithEmailAndPassword(auth, email, password); // extrae la auteticacion de firebae email y pass
               /* Alert.alert("Conexion Exitosa"); */
-              navigation.navigate('SelectBodyPart'); // Screen: SeSelectBodyPart
+              navigation.navigate('SelectBodyPart'); // SeSelectBodyPartScreen
             }catch (error) {
-              Alert.alert("Error:", error.message);
+              Alert.alert("Error:", 'Correo o Contraseña son erroneos');
             }
           }}
         />
