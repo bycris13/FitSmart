@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import PressableButton from "../components/PressableButton";
 import { auth } from '../firebase/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-
+import useLogin from "../hooks/useLogin";
 
 export default function LoginScreen({ navigation }) {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {email, password, setEmail, setPassword} = useLogin();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -45,11 +44,11 @@ export default function LoginScreen({ navigation }) {
           label={"Ingresar"}
           onPress={async() =>{
             try{
-              await signInWithEmailAndPassword(auth, email, password); // extrae la auteticacion de firebae email y pass
+              await signInWithEmailAndPassword(auth, email, password); // extrae la auteticacion de firebase email y password
               /* Alert.alert("Conexion Exitosa"); */
               navigation.navigate('SelectBodyPart'); // SeSelectBodyPartScreen
             }catch (error) {
-              Alert.alert("Error:", 'Correo o Contraseña son erroneos');
+              Alert.alert("Error:", 'Correo o Contraseña son incorrectos');
             }
           }}
         />
@@ -66,8 +65,6 @@ export default function LoginScreen({ navigation }) {
     </TouchableWithoutFeedback>
   );
 }
-
-// Los estyles se mantienen igual
 
 const styles = StyleSheet.create({
   container: {

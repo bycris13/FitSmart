@@ -1,33 +1,16 @@
 import React, { useState } from "react";
-import { View, Text,TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView,TouchableWithoutFeedback, Keyboard, Alert} from "react-native";
+import { View, Text,TextInput, StyleSheet, KeyboardAvoidingView, Platform, ScrollView,TouchableWithoutFeedback, Keyboard } from "react-native";
 import PressableButton from "../components/PressableButton";
-import { auth } from "../firebase/firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import useRegister from "../hooks/useRegister";
 
 export default function RegisterScreen({ navigation }) {
-  
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirPassword, setConfirmPassword] = useState('');
-
-  const createAcount = async () =>{
-    // Valida que los campos no esten vacios.
-    if (!name || !phone || !email || !password || !confirPassword ) {
-      return Alert.alert('Asegurate de llenar todos');
-    }
-    // Valida que los campos contraseña y Confirmar contraseña sean iguales.
-    if (password !== confirPassword) {
-      return Alert.alert('Las contraseñas no coinciden');
-    }
-    // Conexion con firebase
-    try {
-        await createUserWithEmailAndPassword(auth, email, password); // Recive los datos que le entran a firebae email y pass.
-        Alert.alert("Bienvenido", 'Cuenta creada exitosamente');
-        navigation.navigate('Login');
-    } catch (error) {
-      Alert.alert("Error: ", error.password );
+  // Hooks y funciones
+  const {name, phone, email, password, confirPassword, setName, setEmail, setPhone, setPassword, setConfirmPassword, createAcount} = useRegister();
+  // Funcion que navega a la pantalla del login una vez creada la cuenta
+  const onPressCreateAcount = async () =>{
+    const succes = await createAcount();
+    if(succes){
+      navigation.navigate('Login');
     }
   }
 
@@ -93,7 +76,7 @@ export default function RegisterScreen({ navigation }) {
             style={styles.button}
             textStyle={styles.buttonText}
             label="Crear cuenta"
-            onPress={() => createAcount()}
+            onPress={() => onPressCreateAcount()}
           />
 
           <View style={styles.loginLinkContainer}>
