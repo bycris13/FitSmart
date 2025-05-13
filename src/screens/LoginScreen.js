@@ -56,9 +56,16 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.acountText}>
           <Text>No tienes cuenta?</Text>
           <PressableButton
-            textStyle={styles.textRegisterColor}
+            textStyle={styles.textLinkColor}
             label='Crea una cuenta.'
             onPress={() => navigation.navigate('Register')}
+          />
+        </View>
+        <View>
+          <PressableButton 
+          textStyle={[styles.textLinkColor, styles.textRecoverPwd]}
+          label={'¿No recuerdas tu contraseña?'}
+          onPress={() => navigation.navigate('RestorePassword')}
           />
         </View>   
       </View>
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 
-  textRegisterColor: {
+  textLinkColor: {
     color: "#0079fe",
   },
 
@@ -113,6 +120,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 17,
     fontWeight: '500'
+  },
+
+  textRecoverPwd:{
+    alignSelf: 'center',
+    marginVertical: '3%'
   },
 
   imgLogin: {
