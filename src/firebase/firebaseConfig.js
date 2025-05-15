@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth/web-extension";
 
-// Tu configuración de Firebase (cópiala de la consola)
+// Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBfomslni7OEQW4hMNDwIiC29TyIOLkgS4",
   authDomain: "fitsmart-6ad58.firebaseapp.com",
@@ -11,7 +11,7 @@ const firebaseConfig = {
   appId: "1:981011680557:web:ef99996aa32c8c7eadd7a4"
 };
 
-// Inicializa tu app de Firebase
+// Inicializa la app de Firebase
 const app = initializeApp(firebaseConfig);
 
 // Inicializa Firebase Auth usando el adaptador de React Native
