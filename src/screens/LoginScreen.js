@@ -46,7 +46,11 @@ export default function LoginScreen({ navigation }) {
             try{
               await signInWithEmailAndPassword(auth, email, password); // extrae la auteticacion de firebase email y password
               /* Alert.alert("Conexion Exitosa"); */
-              navigation.navigate('SelectBodyPart'); // SeSelectBodyPartScreen
+              // Esta línea impide volver al login después de iniciar sesión correctamente
+              navigation.reset({
+                index: 0,
+                routes:[{name: 'Home'}]
+              })
             }catch (error) {
               Alert.alert("Error:", 'Correo o Contraseña son incorrectos');
             }

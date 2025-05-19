@@ -25,8 +25,19 @@ export default function useRegister() {
         Alert.alert("Bienvenido", 'Cuenta creada exitosamente');
         return true;
     } catch (error) {
-      Alert.alert("Error: ", error.password );
-      return false
+      
+      let message = 'Ocurrio un error. Inteta nuevamente.';
+      // Para saber que tipo de error es.
+      if(error.code === 'auth/email-already-in-use'){
+        message = 'El correo ya esta regitrado.';
+      }else if (error.code === 'auth/invalid-email') {
+        message = 'El correo no es valido.';
+      }else if (error.code === 'auth/weak-password') {
+        message = 'La contraseña es muy debil (mínimo 6 caracteres).';
+      }
+
+      Alert.alert("Error", message);
+      return false;
     }
   }
 

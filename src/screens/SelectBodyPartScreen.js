@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import CardButtons from "../components/CardButtons";
 import PressableButton from "../components/PressableButton";
 
-
-export default function SelectBodyPartsScreen() {
+export default function SelectBodyPartsScreen({ navigation }) { 
   const bodyParts = [
     { name: "Hombros", image: require("../assets/Hombros.png") },
     { name: "Pecho", image: require("../assets/Pecho.png") },
@@ -13,6 +12,16 @@ export default function SelectBodyPartsScreen() {
     { name: "Brazos", image: require("../assets/Brazos.png") },
     { name: "Abdomen", image: require("../assets/Abdomen.png") },
   ];
+
+  const [selectedParts, setSelectedParts] = useState([]);
+
+  const selection = (partName) =>{
+    setSelectedParts((prevSelected) =>
+      prevSelected.includes(partName)
+        ? prevSelected.filter((name) => name !== partName)
+        : [...prevSelected, partName]
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -27,16 +36,25 @@ export default function SelectBodyPartsScreen() {
               <CardButtons
                 label={part.name}
                 imageSource={part.image}
-                onPress={() => console.log(`${part.name} seleccionado`)}
+                isSelected={selectedParts.includes(part.name)}
+                onPress={() => selection(part.name)}
               />
             </View>
           ))}
         </View>
       </View>
-      
+
       <View style={styles.buttonContainer}>
-        <PressableButton label={"Omitir"} style={styles.buttonOmit}/>
-        <PressableButton label={"Continuar"} style={styles.buttonContinue} />
+        <PressableButton 
+        label={"Omitir"}
+        style={styles.buttonOmit}
+        onPress={() => navigation.navigate('Login')}
+        />
+        <PressableButton
+          label={"Continuar"}
+          style={styles.buttonContinue}
+          onPress={() => navigation.navigate('ProfileSetup')} 
+        />
       </View>
     </View>
   );
@@ -78,16 +96,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginVertical: '10%'
+    marginVertical: '10%',
   },
 
-  buttonOmit:{
+  buttonOmit: {
     backgroundColor: '#b4d5a6',
     padding: '4%',
     borderRadius: 8,
   },
 
-  buttonContinue:{
+  buttonContinue: {
     backgroundColor: '#9ec4f7',
     padding: '4%',
     borderRadius: 8,
