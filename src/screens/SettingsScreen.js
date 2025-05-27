@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { auth } from "../firebase/firebaseConfig";
+import { auth, db } from "../firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import { signOut, deleteUser } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import PressableButton from "../components/PressableButton";
@@ -10,7 +11,8 @@ import ConfirmModal from "../components/ConfirmModal";
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
-  const [telefono, setTelefono] = useState(""); // luego lo traerás de 
+  const [telefono, setTelefono] = useState(""); // Se trae de firestore database
+  const [nombre, setNombre] = useState(""); 
   const [modalExit, setModalExit] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
 
@@ -24,7 +26,7 @@ export default function SettingsScreen() {
       index: 0,
       routes: [{ name: "Login" }],
     });
-    alert('Salio exitosamente!')
+    Alert.alert('Sesión Cerrada','Salio exitosamente!')
   };
 
   const handleEliminarCuenta = async () => {
@@ -41,11 +43,40 @@ export default function SettingsScreen() {
     }
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        const docRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(docRef);
+  
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setNombre(data.nombre || "Sin nombre");
+          setTelefono(data.telefono || "Sin número");
+        } else {
+          console.log("No se encontró el documento del usuario");
+        }
+      } catch (error) {
+        console.log("Error al obtener datos del usuario:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+  
+  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ajustes</Text>
 
       <Text style={styles.seccion}>Usuario</Text>
+
+      <View style={[styles.inputBox, { backgroundColor: "#b4d5a6" }]}>
+        <Ionicons name="person" size={20} color="#fff" />
+        <Text style={styles.texto}>{nombre}</Text>
+      </View>
 
       <View style={[styles.inputBox, { backgroundColor: "#9fc5f8" }]}>
         <Ionicons name="mail" size={20} color="#fff" />
@@ -54,7 +85,7 @@ export default function SettingsScreen() {
 
       <View style={[styles.inputBox, { backgroundColor: "#ffe599" }]}>
         <Ionicons name="call" size={20} color="#fff" />
-        <Text style={styles.texto}>3115494441</Text>
+        <Text style={styles.texto}>{telefono}</Text>
       </View>
 
       <Text style={styles.seccion}>Sesión</Text>

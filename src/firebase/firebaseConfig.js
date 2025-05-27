@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth/web-extension";
+import { Firestore, getFirestore } from "firebase/firestore";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -17,5 +18,8 @@ const app = initializeApp(firebaseConfig);
 // Inicializa Firebase Auth usando el adaptador de React Native
 const auth =  getAuth(app);
 
+// Conexion a la base de datos de Firestore Database
+const db = getFirestore(app);
+
 // Exporta la instancia de auth para usarla en pantallas
-export { auth };
+export { auth, db };

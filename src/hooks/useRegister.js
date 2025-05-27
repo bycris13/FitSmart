@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig";
+import { auth, db } from "../firebase/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function useRegister() {
   const [name, setName] = useState('');
@@ -21,15 +22,23 @@ export default function useRegister() {
     }
     // Conexion con firebase
     try {
-        await createUserWithEmailAndPassword(auth, email, password); // Recive los datos que le entran a firebae email y pass.
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password); // Recive los datos que le entran a firebae email y pass.
+        const user = userCredential.user;
+        
+        await setDoc(doc(db, 'usuarios', user.uid),{
+          nombre: name,
+          telefono: phone,
+          email: email
+        });
+
         Alert.alert("Bienvenido", 'Cuenta creada exitosamente');
         return true;
     } catch (error) {
       
-      let message = 'Ocurrio un error. Inteta nuevamente.';
+      let message = 'Ocurrio un error. Intenta nuevamente.';
       // Para saber que tipo de error es.
       if(error.code === 'auth/email-already-in-use'){
-        message = 'El correo ya esta regitrado.';
+        message = 'El correo ya esta registrado.';
       }else if (error.code === 'auth/invalid-email') {
         message = 'El correo no es valido.';
       }else if (error.code === 'auth/weak-password') {
