@@ -21,7 +21,7 @@ export default function BottomNavigationBar() {
       <TouchableOpacity onPress={() => navigation.navigate('PerfilUsuario')}>
         <Ionicons name="person" size={28} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Configuraciones')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
         <Ionicons name="settings" size={28} color="black" />
       </TouchableOpacity>
     </View>

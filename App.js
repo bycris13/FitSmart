@@ -12,6 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PerfilUsuarioScreen from './src/screens/PerfilUsuarioScreen';
 import RutinaScreen from './src/screens/RutinaScreen';
 import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ export default function App() {
         <Stack.Screen name="videosRutina" component={VideosScreen} />
         <Stack.Screen name="PerfilUsuario" component={PerfilUsuarioScreen} />
         <Stack.Screen name="Rutinas" component={RutinaScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
