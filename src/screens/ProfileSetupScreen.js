@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { ScrollView, View, Text, Image, TextInput, StyleSheet } from "react-native";
+import { ScrollView, View, Text, Image, TextInput, StyleSheet, Alert } from "react-native";
+import { db, auth } from "../firebase/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import DropDownPicker from "react-native-dropdown-picker";
 import PressableButton from "../components/PressableButton";
 
-export default function ProfileSetupScreen({ navigation }) {
+export default function ProfileSetupScreen() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const esNuevo = route.params?.esNuevo; // Saber si viene del registro
+
   const [nombreApellido, setNombreApellido] = useState("");
   const [edad, setEdad] = useState("");
   const [altura, setAltura] = useState("");
@@ -26,6 +33,38 @@ export default function ProfileSetupScreen({ navigation }) {
     { label: "Medio", value: "medio" },
     { label: "Alto", value: "alto" },
   ]);
+
+  const guardarPerfil = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return Alert.alert("Error", "Usuario no autenticado.");
+
+      await setDoc(doc(db, "usuarios", user.uid), {
+        nombreApellido,
+        edad,
+        genero,
+        altura,
+        peso,
+        masaMuscular,
+        nivel,
+      }, { merge: true });
+
+      Alert.alert("Éxito", "Perfil guardado correctamente");
+
+      // Redirige dependiendo de si es nuevo o no
+      if (esNuevo) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        });
+      } else {
+        navigation.goBack(); // Regresa a PerfilUsuarioScreen
+      }
+    } catch (error) {
+      console.log("Error al guardar perfil:", error);
+      Alert.alert("Error", "No se pudo guardar el perfil.");
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -75,9 +114,7 @@ export default function ProfileSetupScreen({ navigation }) {
         zIndex={3000}
         zIndexInverse={1000}
         listMode="SCROLLVIEW"
-        scrollViewProps={{
-          nestedScrollEnabled: true,
-        }}
+        scrollViewProps={{ nestedScrollEnabled: true }}
       />
 
       <Text style={styles.label}>Altura:</Text>
@@ -130,21 +167,19 @@ export default function ProfileSetupScreen({ navigation }) {
         zIndex={2000}
         zIndexInverse={2000}
         listMode="SCROLLVIEW"
-        scrollViewProps={{
-          nestedScrollEnabled: true,
-        }}
+        scrollViewProps={{ nestedScrollEnabled: true }}
       />
 
       <View style={styles.buttonContainer}>
         <PressableButton
           label="Regresar"
-          onPress={() => navigation.navigate("Register")}
-          style={[styles.botonBase, styles.botonOmitir]}
-          textStyle={styles.textoBoton}
+          onPress={() => navigation.goBack()}
+          style={[styles.botonBase, styles.botonRegresar]}
+          textStyle={[styles.textoBoton, styles.textoBotonContinuar]}
         />
         <PressableButton
           label="Guardar"
-          onPress={() => navigation.navigate("Login")}
+          onPress={guardarPerfil}
           style={[styles.botonBase, styles.botonContinuar]}
           textStyle={[styles.textoBoton, styles.textoBotonContinuar]}
         />
@@ -231,6 +266,9 @@ const styles = StyleSheet.create({
   },
   botonContinuar: {
     backgroundColor: "#6699CC",
+  },
+  botonRegresar: {
+    backgroundColor: "#b4d5a6",
   },
   textoBoton: {
     color: "#333",

@@ -1,22 +1,55 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import BottomNavigationBar from '../components/BottomNavigationBar';
+import { auth, db } from '../firebase/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function PerfilUsuarioScreen() {
   const navigation = useNavigation();
+  const [perfil, setPerfil] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Datos de ejemplo (puedes luego obtenerlos de un contexto o async storage)
-  const [perfil, setPerfil] = useState({
-    nombreApellido: 'Paula Dotor',
-    edad: '21',
-    genero: 'Mujer',
-    altura: '1.60',
-    peso: '60',
-    masaMuscular: '24.5',
-    nivel: 'Medio',
-  });
+  useFocusEffect(
+    useCallback(() => {
+      const fetchPerfil = async () => {
+        try {
+          const user = auth.currentUser;
+          if (!user) return;
+          const docRef = doc(db, 'usuarios', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setPerfil(docSnap.data());
+          } else {
+            console.log('Perfil no encontrado');
+          }
+        } catch (error) {
+          console.log('Error al obtener perfil:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      setLoading(true); // Reinicia loading
+      fetchPerfil();
+    }, [])
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6699CC" />
+      </View>
+    );
+  }
+
+  if (!perfil) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>No se encontraron datos del perfil.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -110,8 +143,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textoEditar: {
-    color: '',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

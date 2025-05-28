@@ -10,7 +10,7 @@ export default function RegisterScreen({ navigation }) {
   const onPressCreateAcount = async () =>{
     const succes = await createAcount();
     if(succes){
-      navigation.navigate('SelectBodyPart');
+      navigation.navigate('SelectBodyPart', {esNuevo: true});
     }
   }
 

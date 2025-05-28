@@ -53,7 +53,7 @@ export default function SelectBodyPartsScreen({ navigation }) {
         <PressableButton
           label={"Continuar"}
           style={styles.buttonContinue}
-          onPress={() => navigation.navigate('ProfileSetup')} 
+          onPress={() => navigation.navigate('ProfileSetup', { esNuevo: true })}
         />
       </View>
     </View>
