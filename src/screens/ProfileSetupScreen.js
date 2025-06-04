@@ -1,72 +1,48 @@
-import React, { useState } from "react";
-import { ScrollView, View, Text, Image, TextInput, StyleSheet, Alert } from "react-native";
-import { db, auth } from "../firebase/firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import React from "react";
+import { ScrollView, View, Text, Image, TextInput, StyleSheet, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import PressableButton from "../components/PressableButton";
+import useProfileSetup from "../hooks/useProfileSetup";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function ProfileSetupScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const esNuevo = route.params?.esNuevo; // Saber si viene del registro
 
-  const [nombreApellido, setNombreApellido] = useState("");
-  const [edad, setEdad] = useState("");
-  const [altura, setAltura] = useState("");
-  const [peso, setPeso] = useState("");
-  const [masaMuscular, setMasaMuscular] = useState("");
-
+ const  {
+  nombreApellido,
+  setNombreApellido,
+  edad,
+  setEdad,
+  altura,
+  setAltura,
+  peso,
+  setPeso,
+  masaMuscular,
+  setMasaMuscular,
   // Género
-  const [openGenero, setOpenGenero] = useState(false);
-  const [genero, setGenero] = useState(null);
-  const [itemsGenero, setItemsGenero] = useState([
-    { label: "Hombre", value: "hombre" },
-    { label: "Mujer", value: "mujer" },
-  ]);
-
-  // Nivel de experiencia
-  const [openNivel, setOpenNivel] = useState(false);
-  const [nivel, setNivel] = useState(null);
-  const [itemsNivel, setItemsNivel] = useState([
-    { label: "Bajo", value: "bajo" },
-    { label: "Medio", value: "medio" },
-    { label: "Alto", value: "alto" },
-  ]);
-
-  const guardarPerfil = async () => {
-    try {
-      const user = auth.currentUser;
-      if (!user) return Alert.alert("Error", "Usuario no autenticado.");
-
-      await setDoc(doc(db, "usuarios", user.uid), {
-        nombreApellido,
-        edad,
-        genero,
-        altura,
-        peso,
-        masaMuscular,
-        nivel,
-      }, { merge: true });
-
-      Alert.alert("Éxito", "Perfil guardado correctamente");
-
-      // Redirige dependiendo de si es nuevo o no
-      if (esNuevo) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Login" }],
-        });
-      } else {
-        navigation.goBack(); // Regresa a PerfilUsuarioScreen
-      }
-    } catch (error) {
-      console.log("Error al guardar perfil:", error);
-      Alert.alert("Error", "No se pudo guardar el perfil.");
-    }
-  };
+  openGenero,
+  setOpenGenero,
+  genero,
+  setGenero,
+  itemsGenero,
+  setItemsGenero,
+  // Nivel
+  openNivel,
+  setOpenNivel,
+  nivel,
+  setNivel,
+  itemsNivel,
+  setItemsNivel,
+  // Función para guardar
+  guardarPerfil} = useProfileSetup(esNuevo, navigation);
 
   return (
+    <KeyboardAvoidingView
+      style={ {flex: 1} }
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>FitSmart Perfil</Text>
 
@@ -137,7 +113,7 @@ export default function ProfileSetupScreen() {
           value={peso}
           onChangeText={setPeso}
           keyboardType="numeric"
-        />
+          />
         <Text style={styles.unitText}>Kg</Text>
       </View>
 
@@ -168,7 +144,7 @@ export default function ProfileSetupScreen() {
         zIndexInverse={2000}
         listMode="SCROLLVIEW"
         scrollViewProps={{ nestedScrollEnabled: true }}
-      />
+        />
 
       <View style={styles.buttonContainer}>
         <PressableButton
@@ -182,9 +158,10 @@ export default function ProfileSetupScreen() {
           onPress={guardarPerfil}
           style={[styles.botonBase, styles.botonContinuar]}
           textStyle={[styles.textoBoton, styles.textoBotonContinuar]}
-        />
+          />
       </View>
     </ScrollView>
+</KeyboardAvoidingView>
   );
 }
 
@@ -199,6 +176,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginVertical: 15,
+    marginTop: "10%" 
   },
   subtitulo: {
     fontSize: 16,

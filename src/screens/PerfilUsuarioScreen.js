@@ -47,6 +47,12 @@ export default function PerfilUsuarioScreen() {
     return (
       <View style={styles.loadingContainer}>
         <Text>No se encontraron datos del perfil.</Text>
+        <TouchableOpacity
+          style={styles.botonEditar}
+          onPress={() => navigation.navigate('ProfileSetup')}
+        >
+          <Text style={styles.textoEditar}>Editar perfil</Text>
+        </TouchableOpacity>
       </View>
     );
   }
