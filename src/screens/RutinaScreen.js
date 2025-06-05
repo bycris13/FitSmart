@@ -8,6 +8,10 @@ import {
   Modal,
   TextInput,
   Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -101,11 +105,8 @@ export default function RutinaScreen() {
               <Text>Tiempo: {item.tiempo} min</Text>
               <Text>Peso: {item.peso} kg</Text>
               <View style={styles.botones}>
-                <TouchableOpacity onPress={() => {}} style={styles.btnEditar}>
-                  <Text style={styles.btnTexto}>Editar</Text>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleEliminar(index)} style={styles.btnEliminar}>
-                  <Text style={styles.btnTexto}>Eliminar</Text>
+                  <Ionicons name='trash' size={28}/>
                 </TouchableOpacity>
               </View>
             </View>
@@ -138,6 +139,11 @@ export default function RutinaScreen() {
       />
 
       <Modal visible={modalVisible} animationType="slide" transparent>
+      <KeyboardAvoidingView 
+              style={{flex: 1}}
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitulo}>Nueva Rutina</Text>
@@ -157,35 +163,38 @@ export default function RutinaScreen() {
                   <Text style={styles.opcionTexto}>{opcion.nombre}</Text>
                 </TouchableOpacity>
               ))}
-            </View>
+            </View>  
 
             <TextInput
               placeholder="Repeticiones"
+              placeholderTextColor="#666"
               style={styles.input}
               keyboardType="numeric"
               value={nuevaRutina.repeticiones}
               onChangeText={(text) => setNuevaRutina({ ...nuevaRutina, repeticiones: text })}
-            />
+              />
 
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
               <TextInput
                 placeholder="Tiempo"
+                placeholderTextColor="#666"
                 style={[styles.input, { flex: 1 }]}
                 keyboardType="numeric"
                 value={nuevaRutina.tiempo}
                 onChangeText={(text) => setNuevaRutina({ ...nuevaRutina, tiempo: text })}
-              />
+                />
               <Text style={{ marginLeft: 5 }}>min</Text>
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
               <TextInput
                 placeholder="Peso"
+                placeholderTextColor="#666"
                 style={[styles.input, { flex: 1 }]}
                 keyboardType="numeric"
                 value={nuevaRutina.peso}
                 onChangeText={(text) => setNuevaRutina({ ...nuevaRutina, peso: text })}
-              />
+                />
               <Text style={{ marginLeft: 5 }}>kg</Text>
             </View>
 
@@ -199,6 +208,8 @@ export default function RutinaScreen() {
             </View>
           </View>
         </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
       </Modal>
       {/* Componente barra de navegacion */}
       <BottomNavigationBar/> 
@@ -252,13 +263,8 @@ const styles = StyleSheet.create({
   },
   botones: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginTop: 10,
-  },
-  btnEditar: {
-    backgroundColor: '#f0ad4e',
-    padding: 8,
-    borderRadius: 5,
   },
   btnEliminar: {
     backgroundColor: '#d9534f',

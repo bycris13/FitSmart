@@ -1,4 +1,3 @@
-// hooks/useProfileSetup.js
 import { useState } from "react";
 import { Alert } from "react-native";
 import { doc, setDoc } from "firebase/firestore";
